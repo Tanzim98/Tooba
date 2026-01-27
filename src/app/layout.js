@@ -1,5 +1,6 @@
 import { Outfit } from "next/font/google";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { CartProvider } from "@/context/CartContext";
 import CartSidebar from "@/components/CartSidebar";
 import "./globals.css";
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           <CartSidebar />
           {children}
+          <Footer />
         </CartProvider>
       </body>
     </html>

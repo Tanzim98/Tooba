@@ -1,9 +1,11 @@
+"use client";
 import Hero from "@/components/Hero";
 import { products } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 
 export default function Home() {
-  const featuredProducts = products.slice(0, 3); // Show top 3 products
+  const featuredProducts = products.slice(0, 6); // Show top 6 products
+
 
   return (
     <main>
