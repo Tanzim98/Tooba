@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { products } from '@/data/products'; // Assuming export const products = [...]
 import { useCart } from '@/context/CartContext';
 import { Star, Minus, Plus, ShoppingCart } from 'lucide-react';
 
@@ -16,14 +15,21 @@ export default function ProductDetailsPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // params.id is a string, products.id is a number
-        const foundProduct = products.find(p => p.id === parseInt(params.id));
-        if (foundProduct) {
-            setProduct(foundProduct);
-            if (foundProduct.sizes && foundProduct.sizes.length > 0) setSelectedSize(foundProduct.sizes[0]);
-            if (foundProduct.colors && foundProduct.colors.length > 0) setSelectedColor(foundProduct.colors[0]);
+        async function loadProduct() {
+            try {
+                const response = await fetch(`/api/products/${params.id}`);
+                const payload = await response.json();
+                if (response.ok && payload.product) {
+                    setProduct(payload.product);
+                    if (payload.product.sizes && payload.product.sizes.length > 0) setSelectedSize(payload.product.sizes[0]);
+                    if (payload.product.colors && payload.product.colors.length > 0) setSelectedColor(payload.product.colors[0]);
+                }
+            } finally {
+                setLoading(false);
+            }
         }
-        setLoading(false);
+
+        loadProduct();
     }, [params.id]);
 
     const handleQuantityChange = (type) => {
@@ -46,8 +52,8 @@ export default function ProductDetailsPage() {
                         <Image
                             src={product.image}
                             alt={product.name}
-                            layout="fill"
-                            objectFit="cover"
+                            fill
+                            style={{ objectFit: "cover" }}
                             className="product-image"
                         />
                         {product.originalPrice && (

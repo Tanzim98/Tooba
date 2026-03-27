@@ -1,9 +1,28 @@
 "use client";
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import styles from './Hero.module.css';
 
 export default function Hero() {
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        let active = true;
+        fetch('/api/categories')
+            .then((res) => res.json())
+            .then((payload) => {
+                if (active) setCategories(payload.categories || []);
+            })
+            .catch(() => {
+                if (active) setCategories([]);
+            });
+
+        return () => {
+            active = false;
+        };
+    }, []);
+
     return (
         <section className={styles.hero}>
             <div className={styles.bg}>
@@ -17,14 +36,20 @@ export default function Hero() {
                         <span className="text-gradient">Style Game.</span>
                     </h1>
                     <p className={`${styles.subtitle} animate-fade-in delay-100`}>
-                        Premium quality clothing for Men & Kids. Discover the latest limited edition collection.
+                        Premium quality clothing with categories managed from your admin dashboard.
                     </p>
                     <div className="animate-fade-in delay-200" style={{ display: 'flex', gap: '1rem' }}>
-                        <Link href="/products?category=men" className="btn btn-primary">
-                            Shop Men <ArrowRight size={18} />
-                        </Link>
-                        <Link href="/products?category=kids" className="btn btn-outline">
-                            Shop Kids
+                        {categories[0] ? (
+                            <Link href={`/products?category=${categories[0].slug}`} className="btn btn-primary">
+                                Shop {categories[0].name} <ArrowRight size={18} />
+                            </Link>
+                        ) : (
+                            <Link href="/products" className="btn btn-primary">
+                                Shop Collection <ArrowRight size={18} />
+                            </Link>
+                        )}
+                        <Link href="/products" className="btn btn-outline">
+                            Browse All
                         </Link>
                     </div>
                 </div>

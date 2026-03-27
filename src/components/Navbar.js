@@ -1,11 +1,29 @@
 "use client";
 import Link from 'next/link';
 import { ShoppingCart, Menu, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import styles from './Navbar.module.css';
 import { useCart } from '@/context/CartContext';
 
 export default function Navbar() {
     const { cartCount, toggleCart } = useCart();
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        let active = true;
+        fetch('/api/categories')
+            .then((res) => res.json())
+            .then((payload) => {
+                if (active) setCategories(payload.categories || []);
+            })
+            .catch(() => {
+                if (active) setCategories([]);
+            });
+
+        return () => {
+            active = false;
+        };
+    }, []);
 
     return (
         <nav className={styles.navbar}>
@@ -15,8 +33,13 @@ export default function Navbar() {
                 </Link>
                 <ul className={styles.navLinks}>
                     <li><Link href="/">Home</Link></li>
-                    <li><Link href="/products?category=men">Men's Collection</Link></li>
-                    <li><Link href="/products?category=kids">Kids' Collection</Link></li>
+                    <li><Link href="/products">Products</Link></li>
+                    {categories.slice(0, 2).map((category) => (
+                        <li key={category.id}>
+                            <Link href={`/products?category=${category.slug}`}>{category.name}</Link>
+                        </li>
+                    ))}
+                    <li><Link href="/admin">Admin</Link></li>
                 </ul>
                 <div className={styles.actions}>
                     <button className={styles.iconBtn} aria-label="Search">

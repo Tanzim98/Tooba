@@ -266,20 +266,3 @@ export const products = [
         description: "Lightweight windbreaker perfect for outdoor activities. Water-resistant and packable."
     }
 ];
-
-
-export const categories = [
-    { id: 'all', name: 'All Collection' },
-    { id: 'men', name: 'Men\'s Clothing' },
-    { id: 'kids', name: 'Kids\' Clothing' }
-];
-
-export const subCategories = [
-    { id: 'all', name: 'All Types' },
-    { id: 'shirt', name: 'Shirts' },
-    { id: 'pant', name: 'Pants' },
-    { id: 't-shirt', name: 'T-Shirts' },
-    { id: 'polo', name: 'Polos' },
-    { id: 'others', name: 'Jackets & Others' }
-];
-
